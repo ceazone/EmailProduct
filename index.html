@@ -65,7 +65,7 @@
   }
 
   .sticky-nav-cc {
-    height: 26px;
+    height: 31px;
     width: auto;
   }
 
@@ -77,14 +77,14 @@
 
   .sticky-btn-email {
     display: inline-block;
-    padding: 8px 20px;
+    padding: 16px 40px;
     background: var(--sienna);
     color: var(--white);
-    font-size: 13px;
+    font-size: 16px;
     font-weight: 700;
     text-decoration: none;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 1px;
     transition: background 0.2s;
   }
 
@@ -95,14 +95,14 @@
   .sticky-btn-slack {
     display: inline-flex;
     align-items: center;
-    padding: 8px 16px;
+    padding: 16px 32px;
     background: transparent;
     color: var(--black);
-    font-size: 13px;
+    font-size: 16px;
     font-weight: 700;
     text-decoration: none;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 1px;
     border: 2px solid var(--black);
     transition: background 0.2s;
   }
@@ -153,7 +153,7 @@
   }
 
   .hero-cc-logo {
-    height: 34px;
+    height: 41px;
     width: auto;
   }
 
@@ -805,8 +805,8 @@
 <!-- ═══ STICKY NAV ═══ -->
 <nav class="sticky-nav" id="stickyNav">
   <div class="sticky-nav-logos">
-    <img src="CC%20Logo-black.png" alt="Chameleon Collective" class="sticky-nav-cc">
     <div class="sticky-nav-logo">CS</div>
+    <img src="CC%20Logo-black.png" alt="Chameleon Collective" class="sticky-nav-cc">
   </div>
   <div class="sticky-nav-btns">
     <a href="mailto:cesar@chameleon.co" class="sticky-btn-email">Send an Email</a>
@@ -827,8 +827,8 @@
 <section class="hero">
   <nav class="hero-nav">
     <div class="hero-logo-group">
-      <img src="CC%20Logo-black.png" alt="Chameleon Collective" class="hero-cc-logo">
       <div class="hero-logo">CS</div>
+      <img src="CC%20Logo-black.png" alt="Chameleon Collective" class="hero-cc-logo">
     </div>
     <ul class="hero-nav-links">
       <li><a href="#services">Services</a></li>
@@ -1041,18 +1041,16 @@
 
 <script>
   // Show sticky nav after scrolling past hero
+  // Show sticky nav as soon as user scrolls
   const stickyNav = document.getElementById('stickyNav');
-  const hero = document.querySelector('.hero');
 
-  const observer = new IntersectionObserver(([entry]) => {
-    if (entry.isIntersecting) {
-      stickyNav.classList.remove('visible');
-    } else {
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 50) {
       stickyNav.classList.add('visible');
+    } else {
+      stickyNav.classList.remove('visible');
     }
-  }, { threshold: 0 });
-
-  observer.observe(hero);
+  }, { passive: true });
 </script>
 
 </body>
