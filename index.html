@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Email Campaign System — Cesar Santos</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700;800&family=IBM+Plex+Sans+Condensed:wght@700&family=IBM+Plex+Serif:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --sienna: #EB633F;
+    --sienna-dark: #d4522e;
+    --parchment: #EAE4C8;
+    --black: #0a0a0a;
+    --white: #fff;
+    --blue: #88E8F0;
+    --straw: #E8EB74;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'IBM Plex Sans', sans-serif;
+    background: var(--white);
+    color: var(--black);
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  /* ════════════════════════════════════════
+     STICKY NAV
+     ════════════════════════════════════════ */
+  .sticky-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background: var(--white);
+    padding: 12px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e0e0e0;
+    transform: translateY(-100%);
+    transition: transform 0.3s ease;
+  }
+
+  .sticky-nav.visible {
+    transform: translateY(0);
+  }
+
+  .sticky-nav-logos {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .sticky-nav-logo {
+    font-weight: 800;
+    font-size: 14px;
+    padding: 6px 12px;
+    background: var(--black);
+    color: var(--white);
+    letter-spacing: -0.5px;
+  }
+
+  .sticky-nav-cc {
+    height: 22px;
+    width: auto;
+  }
+
+  .sticky-nav-btns {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+
+  .sticky-btn-email {
+    display: inline-block;
+    padding: 8px 20px;
+    background: var(--sienna);
+    color: var(--white);
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: background 0.2s;
+  }
+
+  .sticky-btn-email:hover {
+    background: var(--sienna-dark);
+  }
+
+  .sticky-btn-slack {
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 16px;
+    background: transparent;
+    color: var(--black);
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border: 2px solid var(--black);
+    transition: background 0.2s;
+  }
+
+  .sticky-btn-slack:hover {
+    background: rgba(0,0,0,0.05);
+  }
+
+  .sticky-btn-slack svg {
+    margin-right: 6px;
+  }
+
+  /* ════════════════════════════════════════
+     HERO — massive stacked type
+     ════════════════════════════════════════ */
+  .hero {
+    background: var(--sienna);
+    color: var(--black);
+    padding: 48px 48px 64px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+  }
+
+  .hero-logo-group {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .hero-logo {
+    font-weight: 800;
+    font-size: 18px;
+    padding: 10px 16px;
+    background: var(--black);
+    color: var(--white);
+    letter-spacing: -0.5px;
+  }
+
+  .hero-cc-logo {
+    height: 28px;
+    width: auto;
+  }
+
+  .hero-nav-links {
+    display: flex;
+    gap: 32px;
+    list-style: none;
+  }
+
+  .hero-nav-links a {
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    color: var(--black);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  .hero-title {
+    font-family: 'IBM Plex Sans Condensed', 'IBM Plex Sans', sans-serif;
+    font-size: clamp(80px, 14vw, 180px);
+    font-weight: 700;
+    line-height: 0.92;
+    letter-spacing: -4px;
+    text-transform: uppercase;
+    margin-bottom: 32px;
+  }
+
+  .hero-title .line-check {
+    display: inline-flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .check-box {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 0.65em;
+    height: 0.65em;
+    border: 4px solid var(--black);
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  .check-box::after {
+    content: '✓';
+    font-size: 0.5em;
+    font-weight: 800;
+    line-height: 1;
+  }
+
+  .hero-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 48px;
+  }
+
+  .hero-desc {
+    font-size: 18px;
+    line-height: 1.6;
+    max-width: 420px;
+    color: rgba(0,0,0,0.82);
+  }
+
+  .hero-cta {
+    display: inline-block;
+    padding: 16px 36px;
+    background: var(--black);
+    color: var(--white);
+    font-size: 16px;
+    font-weight: 700;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    flex-shrink: 0;
+    transition: background 0.2s;
+  }
+
+  .hero-cta:hover { background: #222; }
+
+  /* ════════════════════════════════════════
+     PUNCHY TAGLINE — each sentence its own line
+     ════════════════════════════════════════ */
+  .tagline-section {
+    padding: 80px 48px;
+    background: var(--white);
+    position: relative;
+  }
+
+  .tagline-section::before {
+    content: '✳';
+    position: absolute;
+    top: 56px;
+    left: 48px;
+    font-size: 64px;
+    color: var(--sienna);
+    line-height: 1;
+  }
+
+  .big-tagline {
+    font-family: 'IBM Plex Sans Condensed', sans-serif;
+    font-size: clamp(40px, 6vw, 72px);
+    font-weight: 700;
+    line-height: 1.25;
+    text-transform: uppercase;
+    letter-spacing: -1.5px;
+    padding-left: 88px;
+    max-width: 900px;
+  }
+
+  .big-tagline .tl {
+    display: block;
+  }
+
+  .big-tagline .good {
+    background: var(--sienna);
+    color: var(--white);
+    padding: 2px 12px;
+    display: inline;
+  }
+
+  .tagline-body {
+    padding-left: 88px;
+    margin-top: 28px;
+    font-size: 18px;
+    line-height: 1.7;
+    color: #666;
+    max-width: 600px;
+  }
+
+  /* ════════════════════════════════════════
+     MARQUEE
+     ════════════════════════════════════════ */
+  .marquee-wrap {
+    overflow: hidden;
+    background: var(--black);
+    padding: 20px 0;
+  }
+
+  .marquee-track {
+    display: flex;
+    width: max-content;
+    animation: marquee 20s linear infinite;
+  }
+
+  .marquee-text {
+    font-family: 'IBM Plex Sans Condensed', sans-serif;
+    font-size: 56px;
+    font-weight: 700;
+    color: var(--white);
+    text-transform: uppercase;
+    white-space: nowrap;
+    letter-spacing: -1px;
+    padding-right: 24px;
+  }
+
+  .marquee-text .sep {
+    color: var(--sienna);
+    padding: 0 16px;
+  }
+
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  /* ════════════════════════════════════════
+     WHAT YOU GET — big stacked list, ALL hover orange
+     ════════════════════════════════════════ */
+  .services-section {
+    padding: 80px 48px;
+    background: var(--white);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    align-items: start;
+  }
+
+  .services-left {
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--sienna);
+    padding-top: 8px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .services-left::after {
+    content: '';
+    flex: 1;
+    height: 2px;
+    background: var(--sienna);
+  }
+
+  .services-list {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .services-list .svc-item {
+    font-family: 'IBM Plex Sans Condensed', sans-serif;
+    font-size: clamp(36px, 5vw, 56px);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: -1px;
+    line-height: 1.15;
+    color: var(--black);
+    transition: color 0.15s;
+    cursor: default;
+  }
+
+  .services-list .svc-item:hover {
+    color: var(--sienna);
+  }
+
+  .services-list .svc-item.addon {
+    color: var(--sienna);
+    font-style: italic;
+  }
+
+  .svc-new {
+    display: inline-block;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    background: var(--straw);
+    color: var(--black);
+    padding: 3px 8px;
+    vertical-align: middle;
+    margin-left: 12px;
+    font-style: normal;
+  }
+
+  /* ════════════════════════════════════════
+     PROCESS — numbered on sienna bg
+     ════════════════════════════════════════ */
+  .process-section {
+    background: var(--sienna);
+    padding: 80px 48px;
+    position: relative;
+  }
+
+  .process-label {
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: rgba(0,0,0,0.72);
+    margin-bottom: 56px;
+    text-align: center;
+  }
+
+  .process-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 32px;
+  }
+
+  .process-card {
+    text-align: center;
+  }
+
+  .process-num {
+    font-family: 'IBM Plex Sans Condensed', sans-serif;
+    font-size: 120px;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--black);
+    letter-spacing: -4px;
+    margin-bottom: 16px;
+  }
+
+  .process-title {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    letter-spacing: -0.3px;
+  }
+
+  .process-desc {
+    font-size: 15px;
+    line-height: 1.55;
+    color: rgba(0,0,0,0.72);
+  }
+
+  /* ════════════════════════════════════════
+     PLATFORMS — parchment bg
+     ════════════════════════════════════════ */
+  .platforms-section {
+    background: var(--parchment);
+    padding: 72px 48px;
+    text-align: center;
+  }
+
+  .platforms-title {
+    font-family: 'IBM Plex Sans Condensed', sans-serif;
+    font-size: clamp(36px, 5vw, 56px);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: -1px;
+    margin-bottom: 36px;
+    line-height: 1.1;
+  }
+
+  .platforms-row {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .plat-chip {
+    padding: 14px 28px;
+    background: var(--white);
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--black);
+    border: 2px solid var(--black);
+    transition: background 0.15s, color 0.15s;
+    cursor: default;
+  }
+
+  .plat-chip:hover {
+    background: var(--black);
+    color: var(--white);
+  }
+
+  /* ════════════════════════════════════════
+     FAQ — accordion, starts CLOSED
+     ════════════════════════════════════════ */
+  .faq-section {
+    padding: 80px 48px;
+    background: var(--white);
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .faq-title {
+    font-family: 'IBM Plex Sans Condensed', sans-serif;
+    font-size: 44px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: -1px;
+    margin-bottom: 40px;
+  }
+
+  .faq-item {
+    border-bottom: 2px solid var(--black);
+  }
+
+  .faq-q {
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    padding: 24px 0;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  .faq-toggle {
+    font-size: 28px;
+    font-weight: 400;
+    color: var(--sienna);
+    flex-shrink: 0;
+    width: 32px;
+    text-align: center;
+    transition: transform 0.3s;
+    line-height: 1;
+  }
+
+  .faq-item.open .faq-toggle {
+    transform: rotate(45deg);
+  }
+
+  .faq-a {
+    font-size: 16px;
+    line-height: 1.65;
+    color: #666;
+    padding: 0 48px 0 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.35s ease, padding-bottom 0.35s ease;
+  }
+
+  .faq-item.open .faq-a {
+    max-height: 300px;
+    padding-bottom: 24px;
+  }
+
+  /* ════════════════════════════════════════
+     BIG PRICE — left price / right details
+     ════════════════════════════════════════ */
+  .price-section {
+    background: var(--black);
+    color: var(--white);
+    padding: 100px 48px;
+    position: relative;
+  }
+
+  .price-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 64px;
+    align-items: center;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .price-left {
+    text-align: left;
+  }
+
+  .price-big {
+    font-family: 'IBM Plex Sans Condensed', sans-serif;
+    font-size: clamp(100px, 16vw, 200px);
+    font-weight: 700;
+    line-height: 0.9;
+    letter-spacing: -8px;
+    color: var(--white);
+    margin-bottom: 12px;
+    text-align: right;
+  }
+
+  .price-big .dollar {
+    font-size: 0.45em;
+    vertical-align: top;
+    position: relative;
+    top: 0.12em;
+    letter-spacing: -3px;
+  }
+
+  .price-unit {
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--sienna);
+    text-align: right;
+  }
+
+  .price-right {
+    border-left: 2px solid #222;
+    padding-left: 64px;
+  }
+
+  .price-includes-title {
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--sienna);
+    margin-bottom: 24px;
+  }
+
+  .price-includes {
+    list-style: none;
+    margin-bottom: 32px;
+  }
+
+  .price-includes li {
+    font-size: 17px;
+    line-height: 1.5;
+    color: #aaa;
+    padding: 8px 0;
+    padding-left: 24px;
+    position: relative;
+  }
+
+  .price-includes li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--sienna);
+  }
+
+  .price-note {
+    font-size: 14px;
+    color: #999;
+    font-style: italic;
+    margin-bottom: 36px;
+    padding-left: 24px;
+    border-left: 2px solid var(--sienna);
+    line-height: 1.6;
+  }
+
+  .price-cta {
+    display: inline-block;
+    padding: 18px 48px;
+    background: var(--sienna);
+    color: var(--white);
+    font-size: 18px;
+    font-weight: 700;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: background 0.2s;
+  }
+
+  .price-cta:hover {
+    background: var(--sienna-dark);
+  }
+
+
+  /* ════════════════════════════════════════
+     CONTACT SECTION
+     ════════════════════════════════════════ */
+  .contact-section {
+    background: var(--blue);
+    color: var(--black);
+    padding: 80px 48px;
+    text-align: center;
+      }
+
+  .contact-label {
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--black);
+    margin-bottom: 24px;
+  }
+
+  .contact-headline {
+    font-family: 'IBM Plex Sans Condensed', sans-serif;
+    font-size: clamp(36px, 5vw, 56px);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: -1px;
+    margin-bottom: 16px;
+    line-height: 1.1;
+  }
+
+  .contact-sub {
+    font-size: 18px;
+    color: rgba(0,0,0,0.6);
+    max-width: 500px;
+    margin: 0 auto 36px;
+    line-height: 1.6;
+  }
+
+/* Contact buttons */
+  .contact-btns {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .contact-btn-primary {
+    display: inline-block;
+    padding: 16px 40px;
+    background: var(--black);
+    color: var(--white);
+    font-size: 16px;
+    font-weight: 700;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: background 0.2s;
+  }
+
+  .contact-btn-primary:hover {
+    background: #222;
+  }
+
+  .contact-btn-slack {
+    display: inline-flex;
+    align-items: center;
+    padding: 16px 32px;
+    background: transparent;
+    color: var(--black);
+    font-size: 16px;
+    font-weight: 700;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border: 2px solid var(--black);
+    transition: background 0.2s;
+  }
+
+  .contact-btn-slack:hover {
+    background: rgba(0,0,0,0.08);
+  }
+
+  /* ════════════════════════════════════════
+     FOOTER
+     ════════════════════════════════════════ */
+  footer {
+    background: var(--black);
+    color: #888;
+    padding: 32px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+    border-top: 1px solid #222;
+  }
+
+  footer a {
+    color: var(--sienna);
+    text-decoration: none;
+  }
+
+  /* ════════════════════════════════════════
+     RESPONSIVE
+     ════════════════════════════════════════ */
+  @media (max-width: 768px) {
+    .hero { padding: 32px 24px 48px; }
+    .hero-nav-links { display: none; }
+    .hero-bottom { flex-direction: column; align-items: flex-start; }
+    .tagline-section { padding: 60px 24px; }
+    .tagline-section::before { font-size: 40px; top: 48px; left: 24px; }
+    .big-tagline { padding-left: 60px; }
+    .tagline-body { padding-left: 60px; }
+    .services-section { grid-template-columns: 1fr; padding: 60px 24px; }
+    .process-grid { grid-template-columns: 1fr 1fr; gap: 24px; }
+    .process-num { font-size: 80px; }
+    .process-section { padding: 60px 24px; }
+    .platforms-section { padding: 48px 24px; }
+    .faq-section { padding: 60px 24px; }
+    .price-section { padding: 72px 24px; }
+    .price-layout { grid-template-columns: 1fr; gap: 40px; }
+    .price-left { text-align: center; }
+    .price-big { text-align: center; }
+    .price-unit { text-align: center; }
+    .price-right { border-left: none; padding-left: 0; border-top: 2px solid #222; padding-top: 40px; }
+    .contact-section { padding: 60px 24px; }
+    .sticky-nav { padding: 10px 16px; }
+    .sticky-btn-slack span { display: none; }
+    footer { flex-direction: column; gap: 12px; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══ STICKY NAV ═══ -->
+<nav class="sticky-nav" id="stickyNav">
+  <div class="sticky-nav-logos">
+    <div class="sticky-nav-logo">CS</div>
+    <img src="CC_Logo-black.png" alt="Chameleon Collective" class="sticky-nav-cc">
+  </div>
+  <div class="sticky-nav-btns">
+    <a href="mailto:cesar@chameleon.co" class="sticky-btn-email">Send an Email</a>
+    <a href="https://chameleoncollective.slack.com/team/U4G4T0Q7M" class="sticky-btn-slack">
+      <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
+        <path d="M4.2 12.6a2.1 2.1 0 11-2.1-2.1h2.1v2.1zm1.05 0a2.1 2.1 0 114.2 0v5.25a2.1 2.1 0 11-4.2 0v-5.25z" fill="#E01E5A"/>
+        <path d="M7.35 4.2a2.1 2.1 0 112.1-2.1v2.1H7.35zm0 1.05a2.1 2.1 0 110 4.2H2.1a2.1 2.1 0 110-4.2h5.25z" fill="#36C5F0"/>
+        <path d="M15.75 7.35a2.1 2.1 0 112.1 2.1h-2.1V7.35zm-1.05 0a2.1 2.1 0 11-4.2 0V2.1a2.1 2.1 0 114.2 0v5.25z" fill="#2EB67D"/>
+        <path d="M12.6 15.75a2.1 2.1 0 11-2.1 2.1v-2.1h2.1zm0-1.05a2.1 2.1 0 110-4.2h5.25a2.1 2.1 0 110 4.2H12.6z" fill="#ECB22E"/>
+      </svg>
+      <span>Slack</span>
+    </a>
+  </div>
+</nav>
+
+
+<!-- ═══ HERO ═══ -->
+<section class="hero">
+  <nav class="hero-nav">
+    <div class="hero-logo-group">
+      <div class="hero-logo">CS</div>
+      <img src="CC_Logo-black.png" alt="Chameleon Collective" class="hero-cc-logo">
+    </div>
+    <ul class="hero-nav-links">
+      <li><a href="#services">Services</a></li>
+      <li><a href="#process">Process</a></li>
+      <li><a href="#pricing">Pricing</a></li>
+    </ul>
+  </nav>
+
+  <div class="hero-title">
+    EMAIL<br>
+    CAMPAIGN<br>
+    <span class="line-check">SYSTEM <span class="check-box"></span></span>
+  </div>
+
+  <div class="hero-bottom">
+    <p class="hero-desc">Production-ready HTML email series + landing pages, built to your client's brand and delivered in 5 business days from asset handoff. Creative direction included.</p>
+    <a href="#contact" class="hero-cta">Get Started →</a>
+  </div>
+</section>
+
+<!-- ═══ TAGLINE ═══ -->
+<section class="tagline-section">
+  <h2 class="big-tagline">
+    <span class="tl">No agency timelines.</span>
+    <span class="tl">No template garbage.</span>
+    <span class="tl">Just real, <span class="good">good work.</span></span>
+  </h2>
+  <p class="tagline-body">You're a fractional CMO. Your client needs email campaigns yesterday. I handle creative direction, design, and production-ready code — so you can get back to strategy.</p>
+</section>
+
+<!-- ═══ MARQUEE ═══ -->
+<div class="marquee-wrap">
+  <div class="marquee-track">
+    <span class="marquee-text">EMAILS <span class="sep">✦</span> LANDING PAGES <span class="sep">✦</span> CREATIVE DIRECTION <span class="sep">✦</span> 5 DAYS <span class="sep">✦</span> $5,900 FLAT <span class="sep">✦</span> ANY PLATFORM <span class="sep">✦</span> PRODUCTION-READY HTML <span class="sep">✦</span></span>
+    <span class="marquee-text">EMAILS <span class="sep">✦</span> LANDING PAGES <span class="sep">✦</span> CREATIVE DIRECTION <span class="sep">✦</span> 5 DAYS <span class="sep">✦</span> $5,900 FLAT <span class="sep">✦</span> ANY PLATFORM <span class="sep">✦</span> PRODUCTION-READY HTML <span class="sep">✦</span></span>
+  </div>
+</div>
+
+<!-- ═══ WHAT YOU GET ═══ -->
+<section class="services-section" id="services">
+  <div class="services-left">What you get</div>
+  <div class="services-list">
+    <div class="svc-item">Email Series</div>
+    <div class="svc-item">Landing Page</div>
+    <div class="svc-item">Creative Direction</div>
+    <div class="svc-item">Responsive Code</div>
+    <div class="svc-item">Brand Alignment</div>
+    <div class="svc-item">Platform-Agnostic HTML</div>
+    <div class="svc-item addon">+ Brand Interpretation</div>
+  </div>
+</section>
+
+<!-- ═══ MARQUEE 2 ═══ -->
+<div class="marquee-wrap" style="background: var(--sienna);">
+  <div class="marquee-track" style="animation-direction: reverse;">
+    <span class="marquee-text" style="color: var(--black);">GOOD WORK <span class="sep" style="color: rgba(0,0,0,0.3);">✦</span> FAST WORK <span class="sep" style="color: rgba(0,0,0,0.3);">✦</span> REAL WORK <span class="sep" style="color: rgba(0,0,0,0.3);">✦</span> GOOD WORK <span class="sep" style="color: rgba(0,0,0,0.3);">✦</span> FAST WORK <span class="sep" style="color: rgba(0,0,0,0.3);">✦</span> REAL WORK <span class="sep" style="color: rgba(0,0,0,0.3);">✦</span></span>
+    <span class="marquee-text" style="color: var(--black);">GOOD WORK <span class="sep" style="color: rgba(0,0,0,0.3);">✦</span> FAST WORK <span class="sep" style="color: rgba(0,0,0,0.3);">✦</span> REAL WORK <span class="sep" style="color: rgba(0,0,0,0.3);">✦</span> GOOD WORK <span class="sep" style="color: rgba(0,0,0,0.3);">✦</span> FAST WORK <span class="sep" style="color: rgba(0,0,0,0.3);">✦</span> REAL WORK <span class="sep" style="color: rgba(0,0,0,0.3);">✦</span></span>
+  </div>
+</div>
+
+<!-- ═══ PROCESS ═══ -->
+<section class="process-section" id="process">
+  <div class="process-label">How it works — dead simple</div>
+  <div class="process-grid">
+    <div class="process-card">
+      <div class="process-num">01</div>
+      <div class="process-title">You Make the Intro</div>
+      <div class="process-desc">Bring me into the client conversation. A website URL and the campaign goal is all I need.</div>
+    </div>
+    <div class="process-card">
+      <div class="process-num">02</div>
+      <div class="process-title">I Meet the Client</div>
+      <div class="process-desc">One discovery call. I learn the brand, understand the goals, and align on the deliverable. Client provides brand assets and a copy deck or tone-of-voice direction so the emails read like them.</div>
+    </div>
+    <div class="process-card">
+      <div class="process-num">03</div>
+      <div class="process-title">I Build + Present</div>
+      <div class="process-desc">Full email series and landing page — designed, coded, and presented within 5 business days of receiving assets. Written in the client's voice using their copy deck.</div>
+    </div>
+    <div class="process-card">
+      <div class="process-num">04</div>
+      <div class="process-title">Client Deploys</div>
+      <div class="process-desc">Production-ready HTML handed off. They upload to their platform and launch. That's it.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ PLATFORMS ═══ -->
+<section class="platforms-section">
+  <h2 class="platforms-title">Works on every platform.<br>No exceptions.</h2>
+  <div class="platforms-row">
+    <span class="plat-chip">Pardot</span>
+    <span class="plat-chip">Salesforce</span>
+    <span class="plat-chip">Mailchimp</span>
+    <span class="plat-chip">Klaviyo</span>
+    <span class="plat-chip">HubSpot</span>
+    <span class="plat-chip">Marketo</span>
+    <span class="plat-chip">ActiveCampaign</span>
+    <span class="plat-chip">Constant Contact</span>
+  </div>
+</section>
+
+<!-- ═══ FAQ ═══ -->
+<section class="faq-section">
+  <h2 class="faq-title">Frequently Asked Questions.</h2>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">
+      Why wouldn't I just use a template?
+      <span class="faq-toggle">+</span>
+    </div>
+    <div class="faq-a">Templates look like templates. Your client's brand deserves more than a Canva export. This is directed creative — designed to their specific brand, goals, and audience. Not a fill-in-the-blank.</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">
+      Does my client need a copy deck?
+      <span class="faq-toggle">+</span>
+    </div>
+    <div class="faq-a">Yes — I need some form of tone and content direction from the client so the emails read like their brand, not mine. A full copy deck is ideal, but even basic voice guidelines, sample copy, or a few "this sounds like us" examples will work. If the client doesn't have anything, the Brand Interpretation add-on can help establish that foundation.</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">
+      What if my client doesn't have a brand system?
+      <span class="faq-toggle">+</span>
+    </div>
+    <div class="faq-a">That's what the Brand Interpretation add-on is for. I can do a light creative pass (color, type, voice direction) or build out full brand guidelines. Quoted per engagement.</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">
+      5 days — is that real?
+      <span class="faq-toggle">+</span>
+    </div>
+    <div class="faq-a">5 business days from the moment I have the client's brand assets in hand. The clock starts at asset handoff, not the intro. The faster assets land, the faster work ships. This isn't a side project — the process is dialed.</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">
+      What do I need to provide?
+      <span class="faq-toggle">+</span>
+    </div>
+    <div class="faq-a">Brand assets (logo, colors, fonts — whatever exists), a copy deck or tone-of-voice direction, the campaign goal, and a 30-minute call with the client. I handle everything else.</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">
+      How do revisions work?
+      <span class="faq-toggle">+</span>
+    </div>
+    <div class="faq-a">I present the work and we do one round of revisions together. The work is directed from the start, so we're typically aligned by delivery.</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">
+      Do you handle the platform upload?
+      <span class="faq-toggle">+</span>
+    </div>
+    <div class="faq-a">I deliver clean, production-ready HTML files. The client or their team uploads to their ESP. The code is built to work anywhere — no platform-specific quirks.</div>
+  </div>
+</section>
+
+<!-- ═══ BIG PRICE — split layout ═══ -->
+<section class="price-section" id="pricing">
+  <div class="price-layout">
+    <div class="price-left">
+      <div class="price-big"><span class="dollar">$</span>5,900</div>
+      <div class="price-unit">Flat Rate · Per Engagement</div>
+    </div>
+    <div class="price-right">
+      <div class="price-includes-title">Every engagement includes:</div>
+      <ul class="price-includes">
+        <li>3–5 email series (production-ready HTML)</li>
+        <li>1 matching landing page</li>
+        <li>Creative direction</li>
+        <li>Responsive across all email clients</li>
+        <li>Platform-agnostic — works anywhere</li>
+      </ul>
+      <div class="price-note">5 business day turnaround from asset handoff. Client provides brand assets and copy deck or tone direction.</div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══ CONTACT ═══ -->
+<section class="contact-section" id="contact">
+  <div class="contact-label">Get Started</div>
+  <h2 class="contact-headline">Let's Talk.</h2>
+  <p class="contact-sub">Send me the client, the goal, and whatever brand assets you have. I'll take it from there.</p>
+  <div class="contact-btns">
+    <a href="mailto:cesar@chameleon.co" class="contact-btn-primary">Send an Email →</a>
+    <a href="https://chameleoncollective.slack.com/team/U4G4T0Q7M" class="contact-btn-slack">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="vertical-align: middle; margin-right: 8px;">
+        <path d="M4.2 12.6a2.1 2.1 0 11-2.1-2.1h2.1v2.1zm1.05 0a2.1 2.1 0 114.2 0v5.25a2.1 2.1 0 11-4.2 0v-5.25z" fill="#E01E5A"/>
+        <path d="M7.35 4.2a2.1 2.1 0 112.1-2.1v2.1H7.35zm0 1.05a2.1 2.1 0 110 4.2H2.1a2.1 2.1 0 110-4.2h5.25z" fill="#36C5F0"/>
+        <path d="M15.75 7.35a2.1 2.1 0 112.1 2.1h-2.1V7.35zm-1.05 0a2.1 2.1 0 11-4.2 0V2.1a2.1 2.1 0 114.2 0v5.25z" fill="#2EB67D"/>
+        <path d="M12.6 15.75a2.1 2.1 0 11-2.1 2.1v-2.1h2.1zm0-1.05a2.1 2.1 0 110-4.2h5.25a2.1 2.1 0 110 4.2H12.6z" fill="#ECB22E"/>
+      </svg>
+      Message on Slack
+    </a>
+  </div>
+</section>
+
+<!-- ═══ FOOTER ═══ -->
+<footer>
+  <span>© 2026 <a href="#">Cesar Santos</a> · <a href="#">Chameleon Collective</a></span>
+  <span>Built with craft. Delivered with speed.</span>
+</footer>
+
+<script>
+  // Show sticky nav after scrolling past hero
+  const stickyNav = document.getElementById('stickyNav');
+  const hero = document.querySelector('.hero');
+
+  const observer = new IntersectionObserver(([entry]) => {
+    if (entry.isIntersecting) {
+      stickyNav.classList.remove('visible');
+    } else {
+      stickyNav.classList.add('visible');
+    }
+  }, { threshold: 0 });
+
+  observer.observe(hero);
+</script>
+
+</body>
+</html>
